@@ -1,107 +1,40 @@
-/*
-  7. import sys
-  8.
-  9.
- 17.
- 18. while True:  # Main game loop.
-
- 60.
- 61.     # Check if any of the buckets has the goal amount of water:
- 62.     for waterAmount in waterInBucket.values():
- 63.         if waterAmount == GOAL:
- 64.             print('Good job! You solved it in', steps, 'steps!')
- 65.             sys.exit()
- 66.
- 67.     # Let the player select an action to do with a bucket:
- 68.     print('You can:')
- 69.     print('  (F)ill the bucket')
- 70.     print('  (E)mpty the bucket')
- 71.     print('  (P)our one bucket into another')
- 72.     print('  (Q)uit')
- 73.
- 74.     while True:  # Keep asking until the player enters a valid action.
- 75.         move = input('> ').upper()
- 76.         if move == 'QUIT' or move == 'Q':
- 77.             print('Thanks for playing!')
- 78.             sys.exit()
- 79.
- 80.         if move in ('F', 'E', 'P'):
- 81.             break  # Player has selected a valid action.
- 82.         print('Enter F, E, P, or Q')
- 83.
- 84.     # Let the player select a bucket:
- 85.     while True:  # Keep asking until valid bucket entered.
- 86.         print('Select a bucket 8, 5, 3, or QUIT:')
- 87.         srcBucket = input('> ').upper()
- 88.
- 89.         if srcBucket == 'QUIT':
- 90.             print('Thanks for playing!')
- 91.             sys.exit()
- 92.
- 93.         if srcBucket in ('8', '5', '3'):
- 94.             break  # Player has selected a valid bucket.
- 95.
- 96.     # Carry out the selected action:
- 97.     if move == 'F':
- 98.         # Set the amount of water to the max size.
- 99.         srcBucketSize = int(srcBucket)
-100.         waterInBucket[srcBucket] = srcBucketSize
-101.         steps += 1
-102.
-103.     elif move == 'E':
-104.         waterInBucket[srcBucket] = 0  # Set water amount to nothing.
-105.         steps += 1
-106.
-107.     elif move == 'P':
-108.         # Let the player select a bucket to pour into:
-109.         while True:  # Keep asking until valid bucket entered.
-110.             print('Select a bucket to pour into: 8, 5, or 3')
-111.             dstBucket = input('> ').upper()
-112.             if dstBucket in ('8', '5', '3'):
-113.                 break  # Player has selected a valid bucket.
-114.
-115.         # Figure out the amount to pour:
-116.         dstBucketSize = int(dstBucket)
-117.         emptySpaceInDstBucket = dstBucketSize - waterInBucket[dstBucket]
-118.         waterInSrcBucket = waterInBucket[srcBucket]
-119.         amountToPour = min(emptySpaceInDstBucket, waterInSrcBucket)
-120.
-121.         # Pour out water from this bucket:
-122.         waterInBucket[srcBucket] -= amountToPour
-123.
-124.         # Put the poured out water into the other bucket:
-125.         waterInBucket[dstBucket] += amountToPour
-126.         steps += 1
-127.
-128.     elif move == 'C':
-129.         pass  # If the player selected Cancel, do nothing.
-*/
-
-
+// Original: The Big Book of Small Python Projects: 81 Easy Practice Programs by Al Sweigart
+// #81 WATER BUCKET PUZZLE
 #include <iostream>
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 using namespace std;
 
+int stringToInt(const string request) {
+	int response = 0;
+	for (char c : request) {
+		if (c >= '0' && c <= '9') {
+			response = response * 10 + (c - '0');
+		}
+	}
+	return response;
+}
+
 int main() {
-	cout << "Water Bucket Puzzle\n\n";
+	std::cout << "Water Bucket Puzzle\n\n";
 	int GOAL = 4; // The exact amount of water to have in a bucket to win.
 	int steps = 0; // Keep track of how many steps the player made to solve this.
 	// The amount of water in each bucket:
-	map <char, int> waterInBucket;
-	waterInBucket['8'] = 0;
-	waterInBucket['5'] = 0;
-	waterInBucket['3'] = 0;
+	map <string, int> waterInBucket;
+	waterInBucket["8"] = 0;
+	waterInBucket["5"] = 0;
+	waterInBucket["3"] = 0;
 	while (true) {
 		// Display the current state of the buckets:
-		cout << "Try to get " << GOAL << "L of water into one of these\n";
-		cout << "buckets:\n";
+		std::cout << "Try to get " << GOAL << "L of water into one of these\n";
+		std::cout << "buckets:\n";
 
 		vector <string> waterDisplay; // Contains strings for water or empty space.
 		// Get the strings for the 8L bucket:
 		for (int i = 1; i < 9; ++i) {
-			if (waterInBucket['8'] < i) {
+			if (waterInBucket["8"] < i) {
 				waterDisplay.push_back("      "); // Add empty space.
 			} else {
 				waterDisplay.push_back("WWWWWW"); // Add water.
@@ -110,7 +43,7 @@ int main() {
 
 		// Get the strings for the 5L bucket:
 		for (int i = 1; i < 6; ++i) {
-			if (waterInBucket['5'] < i) {
+			if (waterInBucket["5"] < i) {
 				waterDisplay.push_back("      "); // Add empty space.
 			}
 			else {
@@ -120,7 +53,7 @@ int main() {
 
 		// Get the strings for the 3L bucket:
 		for (int i = 1; i < 4; ++i) {
-			if (waterInBucket['3'] < i) {
+			if (waterInBucket["3"] < i) {
 				waterDisplay.push_back("      "); // Add empty space.
 			}
 			else {
@@ -129,21 +62,102 @@ int main() {
 		}
 
 		// Display the buckets with the amount of water in each one:
-		cout << "8|" << waterDisplay[7] << "|\n";
-		cout << "7|" << waterDisplay[6] << "|\n";
-		cout << "6|" << waterDisplay[5] << "|\n";
-		cout << "5|" << waterDisplay[4] << "|  5|" << waterDisplay[12] << "|\n";
-		cout << "4|" << waterDisplay[3] << "|  4|" << waterDisplay[11] << "|\n";
-		cout << "3|" << waterDisplay[2] << "|  3|" << waterDisplay[10] << "|  3|" << waterDisplay[15] << "|\n";
-		cout << "2|" << waterDisplay[1] << "|  2|" << waterDisplay[9] << "|  2|" << waterDisplay[14] << "|\n";
-		cout << "1|" << waterDisplay[0] << "|  1|" << waterDisplay[8] << "|  1|" << waterDisplay[13] << "|\n";
-		cout << " +------+   +------+   +------+\n";
-		cout << "    8L         5L         3L\n";
+		std::cout << "8|" << waterDisplay[7] << "|\n";
+		std::cout << "7|" << waterDisplay[6] << "|\n";
+		std::cout << "6|" << waterDisplay[5] << "|\n";
+		std::cout << "5|" << waterDisplay[4] << "|  5|" << waterDisplay[12] << "|\n";
+		std::cout << "4|" << waterDisplay[3] << "|  4|" << waterDisplay[11] << "|\n";
+		std::cout << "3|" << waterDisplay[2] << "|  3|" << waterDisplay[10] << "|  3|" << waterDisplay[15] << "|\n";
+		std::cout << "2|" << waterDisplay[1] << "|  2|" << waterDisplay[9] << "|  2|" << waterDisplay[14] << "|\n";
+		std::cout << "1|" << waterDisplay[0] << "|  1|" << waterDisplay[8] << "|  1|" << waterDisplay[13] << "|\n";
+		std::cout << " +------+   +------+   +------+\n";
+		std::cout << "    8L         5L         3L\n";
 
+		// Check if any of the buckets has the goal amount of water:
+		for (auto waterAmount : waterInBucket) {
+			if (waterAmount.second == GOAL) {
+				std::cout << "Good job! You solved it in " << steps << " steps!\n";
+				return 0;
+			}
+		}
 
+		// Let the player select an action to do with a bucket:
+		std::cout << "You can:\n";
+		std::cout << "  (F)ill the bucket\n";
+		std::cout << "  (E)mpty the bucket\n";
+		std::cout << "  (P)our one bucket into another\n";
+		std::cout << "  (Q)uit\n";
 
+		string move = "";
+		while (true) {
+			std::cout << "> ";
+			getline(cin, move);
+			transform(move.begin(), move.end(), move.begin(), ::toupper);
+			
+			if (move == "QUIT" || move == "Q") {
+				std::cout << "Thanks for playing!\n";
+				return 0;
+			}
 
-		break; ///////////////
+			if (move == "F" || move == "E" || move == "P") {
+				break; // Player has selected a valid action.
+			}
+			std::cout << "Enter F, E, P, or Q\n";
+		}
+
+		// Let the player select a bucket:
+		string srcBucket = "";
+		while (true) { // Keep asking until valid bucket entered.
+			std::cout << "Select a bucket 8, 5, 3, or QUIT:\n";
+			std::cout << "> ";
+			getline(cin, srcBucket);
+			transform(srcBucket.begin(), srcBucket.end(), srcBucket.begin(), ::toupper);
+			if (srcBucket == "QUIT") {
+				std::cout << "Thanks for playing!\n";
+				return 0;
+			}
+			if (srcBucket == "8" || srcBucket == "5" || srcBucket == "3") {
+				break; // Player has selected a valid bucket.
+			}
+		}
+
+		// Carry out the selected action:
+		int srcBucketSize = 0;
+		if (move == "F") {
+			// Set the amount of water to the max size.
+			srcBucketSize = stringToInt(srcBucket);
+			waterInBucket[srcBucket] = srcBucketSize;
+			steps++;
+		} else if (move == "E") {
+			// Set water amount to nothing.
+			waterInBucket[srcBucket] = 0;
+			steps++;
+		} else if (move == "P") {
+			// Let the player select a bucket to pour into:
+			string dstBucket = "";
+			while (true) { // Keep asking until valid bucket entered.
+				cout << "Select a bucket to pour into: 8, 5, or 3\n";
+				std::cout << "> ";
+				getline(cin, dstBucket);
+				transform(dstBucket.begin(), dstBucket.end(), dstBucket.begin(), ::toupper);
+				if (dstBucket == "8" || dstBucket == "5" || dstBucket == "3") {
+					break;
+				}
+			}
+
+			// Figure out the amount to pour:
+			int dstBucketSize = stringToInt(dstBucket);
+			int emptySpaceInDstBucket = dstBucketSize - waterInBucket[dstBucket];
+			int waterInSrcBucket = waterInBucket[srcBucket];
+			int amountToPour = min(emptySpaceInDstBucket, waterInSrcBucket);
+
+			// Pour out water from this bucket:
+			waterInBucket[srcBucket] -= amountToPour;
+
+			// Put the poured out water into the other bucket:
+			waterInBucket[dstBucket] += amountToPour;
+			steps++;
+		}
 	}
 
 	return 0;
