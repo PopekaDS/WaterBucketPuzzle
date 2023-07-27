@@ -1,4 +1,7 @@
-// Original: The Big Book of Small Python Projects: 81 Easy Practice Programs by Al Sweigart
+// Water Bucket Puzzle, by Al Sweigart
+// A water pouring puzzle.
+// More info: https://en.wikipedia.org/wiki/Water_pouring_puzzle
+// This code is available at https://nostarch.com/big-book-small-python-programming
 // #81 WATER BUCKET PUZZLE
 #include <iostream>
 #include <string>
